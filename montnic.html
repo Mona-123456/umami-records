@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONTNIC — UMAMI RECORDS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+JP:wght@300;400&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f0ead8;
+  --ink: #0e0d0b;
+  --red: #c8281a;
+  --gold: #e99708;
+  --dark: #080604;
+  --mid: #1a1208;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; min-width: 360px; }
+
+body {
+  background: var(--dark);
+  color: var(--cream);
+  font-family: 'Cormorant Garamond','Noto Serif JP',serif;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+/* GRAIN */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.06'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:9998; mix-blend-mode:overlay;
+}
+
+/* NAV */
+nav {
+  position: fixed; top:0; left:0; right:0;
+  z-index: 100;
+  padding: 1.5rem 3rem;
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(to bottom, rgba(8,6,4,0.9), transparent);
+}
+
+.nav-back {
+  color: var(--cream);
+  text-decoration: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+.nav-back:hover { opacity: 1; }
+.nav-back::before { content: '← '; }
+
+.nav-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  opacity: 0.4;
+  font-family: 'Space Mono', monospace;
+}
+
+/* HERO */
+.hero {
+  height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.hero-photos {
+  position: absolute; inset:0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.hero-photo {
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+  filter: grayscale(100%) contrast(1.1);
+  transform: scale(0.95);
+  transition: transform 8s ease;
+}
+
+.hero-photo:hover img { transform: scale(1); }
+
+.hero-photo::after {
+  content:'';
+  position:absolute; inset:0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(8,6,4,0.8));
+}
+
+.hero-overlay {
+  position: absolute; inset:0;
+  background: linear-gradient(to bottom, transparent 30%, rgba(8,6,4,0.6) 70%, var(--dark));
+  z-index:2;
+}
+
+.hero-content {
+  position: relative; z-index:3;
+  width: 100%;
+  padding: 0 3rem 5rem;
+}
+
+.hero-banner {
+  margin-bottom: 2rem;
+}
+
+.hero-banner img {
+  height: auto;
+  width: 66%;
+  max-width: 600px;
+  opacity: 0.9;
+}
+
+.hero-name {
+  font-size: clamp(4rem, 12vw, 10rem);
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  line-height: 0.9;
+  color: var(--cream);
+  mix-blend-mode: screen;
+}
+
+.hero-sub {
+  margin-top: 1rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  opacity: 0.8;
+}
+
+/* CONTENT */
+.content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 6rem 3rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: start;
+}
+
+.photo-col {
+  position: relative;
+}
+
+.photo-main {
+  width: 100%;
+  filter: grayscale(100%) contrast(1.05);
+}
+
+.photo-accent {
+  position: absolute;
+  bottom: -3rem; right: -2rem;
+  width: 55%;
+  filter: grayscale(100%) contrast(1.1);
+  border: 2px solid var(--dark);
+}
+
+.text-col {
+  padding-top: 2rem;
+}
+
+.artist-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.artist-label::after {
+  content:'';
+  flex:1;
+  height:1px;
+  background: var(--gold);
+  opacity: 0.3;
+}
+
+.artist-name {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.artist-origin {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--cream);
+  opacity: 0.4;
+  margin-bottom: 3rem;
+}
+
+.bio-en {
+  font-size: 1.05rem;
+  line-height: 1.9;
+  font-weight: 300;
+  color: var(--cream);
+  opacity: 0.85;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.bio-ja {
+  font-size: 0.9rem;
+  line-height: 2.2;
+  font-weight: 300;
+  color: var(--cream);
+  opacity: 0.6;
+  margin-bottom: 3rem;
+  font-family: 'Noto Serif JP', serif;
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, var(--gold), transparent);
+  opacity: 0.3;
+  margin-bottom: 3rem;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: var(--cream);
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(240,234,216,0.1);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.link-item::before {
+  content:'';
+  position:absolute; inset:0;
+  background: var(--gold);
+  opacity:0;
+  transition: opacity 0.3s;
+}
+
+.link-item:hover::before { opacity: 0.08; }
+.link-item:hover { border-color: rgba(233,151,8,0.4); }
+
+.link-icon { font-size: 0.9rem; position:relative; z-index:1; }
+.link-text { position:relative; z-index:1; }
+
+/* RELEASES SECTION */
+.releases-section {
+  background: var(--mid);
+  padding: 6rem 3rem;
+}
+
+.releases-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.5em;
+  color: var(--gold);
+  margin-bottom: 3rem;
+}
+
+.release-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem;
+}
+
+.release-item {
+  text-decoration: none;
+  color: var(--cream);
+  display: block;
+}
+
+.release-cover {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.release-cover img {
+  width: 100%; height:100%;
+  object-fit: cover;
+  filter: grayscale(20%);
+  transition: filter 0.4s, transform 0.4s;
+}
+
+.release-item:hover .release-cover img {
+  filter: grayscale(0%);
+  transform: scale(1.03);
+}
+
+.release-meta {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  opacity: 0.7;
+  margin-bottom: 0.3rem;
+}
+
+.release-name {
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  font-weight: 300;
+}
+
+/* FOOTER */
+footer {
+  padding: 3rem;
+  text-align: center;
+  border-top: 1px solid rgba(240,234,216,0.05);
+}
+
+footer a {
+  color: var(--cream);
+  text-decoration: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  opacity: 0.3;
+  transition: opacity 0.3s;
+}
+
+footer a:hover { opacity: 0.8; }
+
+/* LANG TOGGLE */
+[data-lang="ja"] { display:none; }
+body.ja [data-lang="en"] { display:none; }
+body.ja [data-lang="ja"] { display:block; }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(30px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.hero-content { animation: fadeUp 1.2s ease forwards; }
+.text-col { animation: fadeUp 1s 0.3s ease both; }
+
+@media (max-width: 768px) {
+  .hero-photos { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  .content { grid-template-columns: 1fr; gap:3rem; }
+  .photo-accent { display:none; }
+  nav { padding: 1rem 1.5rem; flex-wrap: wrap; gap: 0.5rem; }
+  .nav-label { display: none; }
+  .hero-content { padding: 0 1.5rem 4rem; }
+  .hero-name { font-size: 3rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://umami-records.com" class="nav-back">UMAMI RECORDS</a>
+  <span class="nav-label">ARTIST</span>
+  <div style="display:flex; gap:0.5rem;">
+    <button onclick="document.body.classList.remove('ja')" style="background:none; border:1px solid rgba(240,234,216,0.3); color:var(--cream); font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; padding:0.3rem 0.6rem; cursor:pointer;">EN</button>
+    <button onclick="document.body.classList.add('ja')" style="background:none; border:1px solid rgba(240,234,216,0.3); color:var(--cream); font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; padding:0.3rem 0.6rem; cursor:pointer;">日本語</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-photos">
+    <div class="hero-photo">
+      <img src="https://mona-123456.github.io/umami-records/images/Montnic3.png" alt="MONTNIC">
+    </div>
+    <div class="hero-photo">
+      <img src="https://mona-123456.github.io/umami-records/images/Montnic4.png" alt="MONTNIC">
+    </div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-banner">
+      <img src="https://mona-123456.github.io/umami-records/images/Montnic-banner.png" alt="MONTNIC — UMAMI RECORDS">
+    </div>
+    <p class="hero-sub">PRODUCER · TOKYO · UMAMI RECORDS</p>
+  </div>
+</section>
+
+<!-- BIO -->
+<section class="content">
+  <div class="photo-col">
+    <img class="photo-main" src="https://mona-123456.github.io/umami-records/images/Montnic.png" alt="MONTNIC">
+    <img class="photo-accent" src="https://mona-123456.github.io/umami-records/images/Montnic2.png" alt="MONTNIC">
+  </div>
+
+  <div class="text-col">
+    <div class="artist-label">UMAMI RECORDS · ARTIST</div>
+    <h1 class="artist-name">MONTNIC</h1>
+    <p class="artist-origin">PRODUCER · TOKYO</p>
+
+    <p class="bio-en" data-lang="en">
+      MONTNIC doesn't explain herself. The chaos exceeds any careless words.<br><br>
+      Born into a strict house of classical music, she ran away to jazz. Under the shadow of Brahms, she found freedom in a father's crate of jazz vinyl, late-night radio tapes of Indian folklore, and a mother humming Russian folk songs.<br><br>
+      She danced through it all — from classical ballet to Cuban salsa and Arabic belly dance. Everything went in. Nothing was ever sorted.<br><br>
+      The Shades EP started with an 1820 woodblock print: a woman standing barefoot in the snow. MONTNIC saw the print, caught a specific coldness in the air, and compressed it into sound. That's how it works.<br><br>
+      Tokyo's midnight. Jazzy R&B dragging the heavy ghost of Edo. The kind of music that makes you feel homesick for a place you've never been.<br><br>
+      She has lived it all. That's not an excuse. That's the point.
+    </p>
+    <p class="bio-ja" data-lang="ja">
+      MONTNICは、自分のことを説明しない。その混沌は軽率な言葉を凌駕するからだ。<br><br>
+      クラシック音楽の厳格な家に生まれ、ジャズに逃げた。ブラームスの影の下で、父のジャズレコードの山、深夜ラジオのインド民謡テープ、母が口ずさむロシア民謡に自由を見つけた。<br><br>
+      クラシックバレエからキューバン、サルサ、アラビアのベリーダンスまで体ごと踊り抜けた。すべてが入ってきた。何ひとつ整理されなかった。<br><br>
+      The Shades EPは、1820年の浮世絵から始まった。雪の中に裸足で立つ女性。MONTNICはその絵を見て、空気の中に特定の冷たさを感じ取り、それを音に圧縮した。メロディーが生まれグルーブになった。<br><br>
+      東京の深夜。江戸の重い亡霊を引きずる、ジャジーなR&B。行ったことのない場所への郷愁を感じさせる音楽。<br><br>
+      彼女はすべてを生きてきた。それは免罪符じゃない。それは象徴だ。
+    </p>
+
+    <div class="divider"></div>
+
+    <div class="links">
+      <a href="https://open.spotify.com/artist/5rCt76pKIyF4z1nKqlpWYR?si=2sFj2lSZS3-3PbpUJpPrOw" target="_blank" class="link-item">
+        <span class="link-icon">♫</span>
+        <span class="link-text">SPOTIFY</span>
+      </a>
+      <a href="https://music.apple.com/jp/artist/montnic/6771043858?ls" target="_blank" class="link-item">
+        <span class="link-icon">♪</span>
+        <span class="link-text">APPLE MUSIC</span>
+      </a>
+      <a href="https://montnic.bandcamp.com" target="_blank" class="link-item">
+        <span class="link-icon">◈</span>
+        <span class="link-text">BANDCAMP</span>
+      </a>
+      <a href="https://umamitextile.com" target="_blank" class="link-item">
+        <span class="link-icon">◈</span>
+        <span class="link-text">UMAMI TEXTILE</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- RELEASES -->
+<section class="releases-section">
+  <div class="releases-inner">
+    <p class="section-title">DISCOGRAPHY</p>
+    <div class="release-grid">
+      <a href="https://montnic.bandcamp.com/album/the-shades-ep" target="_blank" class="release-item">
+        <div class="release-cover">
+          <img src="https://mona-123456.github.io/umami-records/images/image_3.png" alt="The Shades EP">
+        </div>
+        <p class="release-meta">UR-001 · EP · 2026</p>
+        <p class="release-name">The Shades EP</p>
+      </a>
+      <a href="https://montnic.bandcamp.com/track/bone-and-blade-long-edit" target="_blank" class="release-item">
+        <div class="release-cover">
+          <img src="https://mona-123456.github.io/umami-records/images/boneandblade-cover.jpg" alt="Bone and Blade">
+        </div>
+        <p class="release-meta">UR-002 · SINGLE · 2026</p>
+        <p class="release-name">Bone and Blade (Long Edit)</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="https://umami-records.com">← UMAMI RECORDS</a>
+</footer>
+
+</body>
+</html>
